@@ -42,7 +42,8 @@ public class MainActivity extends AppCompatActivity {
         regBtn.setOnClickListener(v -> {
             String editLogin = enterLogin.getText().toString();
             String editPass = enterPass.getText().toString();
-            saveIntoInternalStorage(editLogin, editPass);
+            saveIntoInternalStorage(LOGIN_FILE, editLogin);
+            saveIntoInternalStorage(PASS_FILE, editPass);
         });
 
         loginBtn.setOnClickListener(v -> {
@@ -79,23 +80,19 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void saveIntoInternalStorage(String editLogin, String editPass) {
-        BufferedWriter loginWriter = null;
-        BufferedWriter passWriter = null;
+    private void saveIntoInternalStorage(String fileName, String text) {
+        BufferedWriter writer = null;
         try {
-            loginWriter = new BufferedWriter(new OutputStreamWriter(openFileOutput(LOGIN_FILE, Context.MODE_PRIVATE)));
-            passWriter = new BufferedWriter(new OutputStreamWriter(openFileOutput(PASS_FILE, Context.MODE_PRIVATE)));
-            loginWriter.write(editLogin);
-            passWriter.write(editPass);
+            writer = new BufferedWriter(new OutputStreamWriter(openFileOutput(fileName, Context.MODE_PRIVATE)));
+            writer.write(text);
             Toast.makeText(this, "Данные сохранены", Toast.LENGTH_SHORT).show();
         } catch (IOException e) {
             e.printStackTrace();
             Toast.makeText(this, "Ошибка сохранения", Toast.LENGTH_SHORT).show();
         } finally {
-            if (loginWriter != null || passWriter != null){
+            if (writer != null){
                 try {
-                    loginWriter.close();
-                    passWriter.close();
+                    writer.close();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
